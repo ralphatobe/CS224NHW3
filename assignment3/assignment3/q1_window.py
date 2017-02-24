@@ -37,7 +37,7 @@ class Config:
     n_word_features = 2 # Number of features for every word in the input.
     window_size = 1 # The size of the window to use.
     ### YOUR CODE HERE
-    n_window_features = 0 # The total number of features used for each window.
+    n_window_features = (2 * window_size + 1) * n_word_features # The total number of features used for each window.
     ### END YOUR CODE
     n_classes = 5
     dropout = 0.5
@@ -97,7 +97,26 @@ def make_windowed_data(data, start, end, window_size = 1):
     windowed_data = []
     for sentence, labels in data:
     ### YOUR CODE HERE (5-20 lines)
-
+        # print "iter"
+        # print sentence
+        # print labels
+        k = len(sentence)
+        for i in range(k):
+            features = []
+            # add starts
+            if i - window_size < 0:
+                features = start * (window_size - i) + features
+                # print features
+            # add features
+            features = features + sum(sentence[max(0,i - window_size):min(k,i + window_size + 1)], [])
+            # print features
+            # add ends
+            if i + window_size + 1 > k:
+                features = features + end * (i + window_size + 1 - k)
+                # print features
+            # add to output list
+            windowed_data.append((features,labels[i]))
+            # print windowed_data
     ### END YOUR CODE
     return windowed_data
 
