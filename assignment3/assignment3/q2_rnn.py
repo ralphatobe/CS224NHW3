@@ -111,9 +111,9 @@ def pad_sequences(data, max_length):
             wordLen = len(sentence[0])
             sentence = sentence+[[0]*wordLen]*extraLen
             labels = labels+[4]*extraLen
-            mask = [1]*(max_length-extraLen) + [0]*extraLen
+            mask = [True]*(max_length-extraLen) + [False]*extraLen
         else: 
-            mask = [1]*max_length
+            mask = [True]*max_length
         ret.append((sentence,labels,mask))
         ### END YOUR CODE ###
     return ret
@@ -182,11 +182,11 @@ class RNNModel(NERModel):
         """
         ### YOUR CODE (~6-10 lines)
         feed_dict = {}
-        if inputs_batch != None:
+        if inputs_batch is not None:
                 feed_dict[self.input_placeholder] = inputs_batch
-        if mask_batch != None: 
+        if mask_batch is not None: 
                 feed_dict[self.mask_placeholder] = mask_batch
-        if labels_batch != None:
+        if labels_batch is not None:
                 feed_dict[self.labels_placeholder] = labels_batch
         feed_dict[self.dropout_placeholder] = dropout
         ### END YOUR CODE
@@ -280,7 +280,7 @@ class RNNModel(NERModel):
         U = tf.get_variable("U", 
                             shape = [self.config.hidden_size,self.config.n_classes],
                             initializer = tf.contrib.layers.xavier_initializer())
-        b2 = tf.Variable(tf.zeros(self.config.n_classes))
+        b2 = tf.Variable(tf.zeros(self.config.n_classes), dtype = tf.float32)
         h = tf.zeros(shape = [tf.shape(x)[0], self.config.hidden_size], dtype = tf.float32)
         ### END YOUR CODE
 
@@ -288,7 +288,7 @@ class RNNModel(NERModel):
             for time_step in range(self.max_length):
                 ### YOUR CODE HERE (~6-10 lines)
                 # print time_step
-                if time_step == 1:
+                if time_step >= 1:
                     tf.get_variable_scope().reuse_variables()
                 o_t, h = cell(x[:,time_step,:], h)
                 o_drop_t = tf.nn.dropout(o_t, dropout_rate)
@@ -297,7 +297,7 @@ class RNNModel(NERModel):
 
         # Make sure to reshape @preds here.
         ### YOUR CODE HERE (~2-4 lines)
-        preds = tf.reshape(preds, [-1, self.max_length, self.config.n_classes])
+        preds = tf.pack(preds, axis = 1)
         ### END YOUR CODE
 
         assert preds.get_shape().as_list() == [None, self.max_length, self.config.n_classes], "predictions are not of the right shape. Expected {}, got {}".format([None, self.max_length, self.config.n_classes], preds.get_shape().as_list())
@@ -319,8 +319,11 @@ class RNNModel(NERModel):
             loss: A 0-d tensor (scalar)
         """
         ### YOUR CODE HERE (~2-4 lines)
-        true_preds = tf.boolean_mask(preds, self.mask_placeholder)
-        loss = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(true_preds,self.labels_placeholder))
+        loss = tf.reduce_mean(
+                   tf.boolean_mask(
+                       tf.nn.sparse_softmax_cross_entropy_with_logits(preds,
+                                                                      self.labels_placeholder), 
+                              self.mask_placeholder))
         ### END YOUR CODE
         return loss
 
