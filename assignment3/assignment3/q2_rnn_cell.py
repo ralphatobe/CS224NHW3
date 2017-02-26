@@ -14,6 +14,7 @@ import sys
 import tensorflow as tf
 import numpy as np
 
+
 logger = logging.getLogger("hw3.q2.1")
 logger.setLevel(logging.DEBUG)
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
@@ -62,9 +63,17 @@ class RNNCell(tf.nn.rnn_cell.RNNCell):
         # be defined elsewhere!
         with tf.variable_scope(scope):
             ### YOUR CODE HERE (~6-10 lines)
-            pass
+            W_x = tf.get_variable("W_x",
+                                  (self.input_size,self.state_size),
+                                  initializer = tf.contrib.layers.xavier_initializer())
+            W_h = tf.get_variable("W_h",
+                                  (self.state_size,self.state_size),
+                                  initializer = tf.contrib.layers.xavier_initializer())
+            b = tf.get_variable("b",(self.state_size))
+            
+            new_state = tf.sigmoid(tf.matmul(inputs,W_x)+tf.matmul(state,W_h)+b)
             ### END YOUR CODE ###
-        # For an RNN , the output and state are the same (N.B. this
+
         # isn't true for an LSTM, though we aren't using one of those in
         # our assignment)
         output = new_state
