@@ -277,7 +277,7 @@ class RNNModel(NERModel):
         # Define U and b2 as variables.
         # Initialize state as vector of zeros.
         ### YOUR CODE HERE (~4-6 lines)
-        print x
+        print tf.shape(x).shape
         U = tf.get_variable("U", 
                             shape = [self.config.hidden_size,self.config.n_classes],
                             initializer = tf.contrib.layers.xavier_initializer())
@@ -288,14 +288,16 @@ class RNNModel(NERModel):
         with tf.variable_scope("RNN"):
             for time_step in range(self.max_length):
                 ### YOUR CODE HERE (~6-10 lines)
+                if time_step == 1:
+                    tf.get_variable_scope().reuse_variables()
                 o_t, h_t = cell(x[time_step], h)
                 o_drop_t = tf.nn.dropout(o_t, dropout_rate)
-                pred = tf.matmul(o_drop_t, U) + b2
+                preds.append(tf.matmul(o_drop_t, U) + b2)
                 ### END YOUR CODE
 
         # Make sure to reshape @preds here.
         ### YOUR CODE HERE (~2-4 lines)
-
+        preds = tf.reshape(preds, [-1, self.max_length, self.config.n_classes])
         ### END YOUR CODE
 
         assert preds.get_shape().as_list() == [None, self.max_length, self.config.n_classes], "predictions are not of the right shape. Expected {}, got {}".format([None, self.max_length, self.config.n_classes], preds.get_shape().as_list())
