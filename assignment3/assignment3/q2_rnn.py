@@ -277,7 +277,6 @@ class RNNModel(NERModel):
         # Define U and b2 as variables.
         # Initialize state as vector of zeros.
         ### YOUR CODE HERE (~4-6 lines)
-        print tf.shape(x).shape
         U = tf.get_variable("U", 
                             shape = [self.config.hidden_size,self.config.n_classes],
                             initializer = tf.contrib.layers.xavier_initializer())
@@ -288,9 +287,10 @@ class RNNModel(NERModel):
         with tf.variable_scope("RNN"):
             for time_step in range(self.max_length):
                 ### YOUR CODE HERE (~6-10 lines)
+                # print time_step
                 if time_step == 1:
                     tf.get_variable_scope().reuse_variables()
-                o_t, h_t = cell(x[time_step], h)
+                o_t, h = cell(x[:,time_step,:], h)
                 o_drop_t = tf.nn.dropout(o_t, dropout_rate)
                 preds.append(tf.matmul(o_drop_t, U) + b2)
                 ### END YOUR CODE
@@ -319,7 +319,8 @@ class RNNModel(NERModel):
             loss: A 0-d tensor (scalar)
         """
         ### YOUR CODE HERE (~2-4 lines)
-        loss = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(preds,self.labels_placeholder))
+        true_preds = tf.boolean_mask(preds, self.mask_placeholder)
+        loss = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(true_preds,self.labels_placeholder))
         ### END YOUR CODE
         return loss
 
