@@ -13,8 +13,8 @@ import sys
 import time
 from datetime import datetime
 
-import tensorflow as tf
 import numpy as np
+import tensorflow as tf
 
 from util import print_sentence, write_conll, read_conll
 from data_util import load_and_preprocess_data, load_embeddings, ModelHelper
