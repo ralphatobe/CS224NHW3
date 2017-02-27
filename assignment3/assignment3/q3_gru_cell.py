@@ -73,18 +73,18 @@ class GRUCell(tf.nn.rnn_cell.RNNCell):
                             initializer = tf.contrib.layers.xavier_initializer())
             W_z = tf.get_variable("W_z",(self.state_size,self.state_size),
                             initializer = tf.contrib.layers.xavier_initializer())
-            W_r = tf.get_variable("W_",(self.state_size,self.state_size),
+            W_r = tf.get_variable("W_r",(self.state_size,self.state_size),
                             initializer = tf.contrib.layers.xavier_initializer())
             W_o = tf.get_variable("W_o",(self.state_size,self.state_size),
                             initializer = tf.contrib.layers.xavier_initializer())
-            b_z = tf.get_variable("b_z",(self.state_size))
-            b_r = tf.get_variable("b_r",(self.state_size))
-            b_o = tf.get_variable("b_o",(self.state_size))
+            b_z = tf.get_variable("b_z",(self.state_size),initializer = tf.constant_initializer(0))
+            b_r = tf.get_variable("b_r",(self.state_size),initializer = tf.constant_initializer(0))
+            b_o = tf.get_variable("b_o",(self.state_size),initializer = tf.constant_initializer(0))
 
             z_t = tf.sigmoid(tf.matmul(inputs,U_z)+ tf.matmul(state,W_z) + b_z)
             r_t = tf.sigmoid(tf.matmul(inputs,U_r)+ tf.matmul(state,W_r) + b_r)
-            #o_t = tf.tanh(tf.matmul(inputs,U_o)+ tf.matmul(r_t*state,W_o) + b_o)
-            o_t = tf.tanh(tf.matmul(inputs,U_o)+ r_t*tf.matmul(state,W_o) + b_o)
+            o_t = tf.tanh(tf.matmul(inputs,U_o)+ tf.matmul(r_t*state,W_o) + b_o)
+            #o_t = tf.tanh(tf.matmul(inputs,U_o)+ r_t*tf.matmul(state,W_o) + b_o)
             new_state = z_t*state + (1-z_t)*o_t
 
             ### END YOUR CODE ###
