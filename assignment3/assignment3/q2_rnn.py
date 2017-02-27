@@ -290,6 +290,7 @@ class RNNModel(NERModel):
                 # print time_step
                 if time_step >= 1:
                     tf.get_variable_scope().reuse_variables()
+                # I am very unsure whether this output should be h or h_t
                 o_t, h = cell(x[:,time_step,:], h)
                 o_drop_t = tf.nn.dropout(o_t, dropout_rate)
                 preds.append(tf.matmul(o_drop_t, U) + b2)

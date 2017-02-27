@@ -11,8 +11,8 @@ import argparse
 import logging
 import sys
 
-import tensorflow as tf
 import numpy as np
+import tensorflow as tf
 
 logger = logging.getLogger("hw3.q3.1")
 logger.setLevel(logging.DEBUG)
