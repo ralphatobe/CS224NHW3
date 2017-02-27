@@ -260,7 +260,7 @@ class RNNModel(NERModel):
         """
 
         x = self.add_embedding()
-        dropout_rate = self.dropout_placeholder
+        #dropout_rate = self.dropout_placeholder
 
         preds = [] # Predicted output at each timestep should go here!
 
@@ -292,7 +292,8 @@ class RNNModel(NERModel):
                     tf.get_variable_scope().reuse_variables()
                 # I am very unsure whether this output should be h or h_t
                 o_t, h = cell(x[:,time_step,:], h)
-                o_drop_t = tf.nn.dropout(o_t, dropout_rate)
+                #o_drop_t = tf.nn.dropout(o_t, dropout_rate)
+                o_drop_t = tf.nn.dropout(o_t, self.dropout_placeholder)
                 preds.append(tf.matmul(o_drop_t, U) + b2)
                 ### END YOUR CODE
 
