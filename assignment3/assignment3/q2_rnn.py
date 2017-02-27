@@ -290,6 +290,7 @@ class RNNModel(NERModel):
                 # print time_step
                 if time_step >= 1:
                     tf.get_variable_scope().reuse_variables()
+                # I am very unsure whether this output should be h or h_t
                 o_t, h = cell(x[:,time_step,:], h)
                 #o_drop_t = tf.nn.dropout(o_t, dropout_rate)
                 o_drop_t = tf.nn.dropout(o_t, self.dropout_placeholder)
@@ -348,6 +349,7 @@ class RNNModel(NERModel):
             train_op: The Op for training.
         """
         ### YOUR CODE HERE (~1-2 lines)
+        print(loss)
         train_op = tf.train.AdamOptimizer(self.config.lr).minimize(loss)
         ### END YOUR CODE
         return train_op
