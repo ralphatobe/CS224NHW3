@@ -65,13 +65,17 @@ class GRUCell(tf.nn.rnn_cell.RNNCell):
         # be defined elsewhere!
         with tf.variable_scope(scope):
             ### YOUR CODE HERE (~20-30 lines)
-            U_z = tf.get_variable("U_x",(self.input_size,self.state_size),
+            U_z = tf.get_variable("U_z",(self.input_size,self.state_size),
                             initializer = tf.contrib.layers.xavier_initializer())
             U_r = tf.get_variable("U_r",(self.input_size,self.state_size),
+                            initializer = tf.contrib.layers.xavier_initializer())
+            U_o = tf.get_variable("U_o",(self.input_size,self.state_size),
                             initializer = tf.contrib.layers.xavier_initializer())
             W_z = tf.get_variable("W_z",(self.state_size,self.state_size),
                             initializer = tf.contrib.layers.xavier_initializer())
             W_r = tf.get_variable("W_z",(self.state_size,self.state_size),
+                            initializer = tf.contrib.layers.xavier_initializer())
+            W_o = tf.get_variable("W_o",(self.state_size,self.state_size),
                             initializer = tf.contrib.layers.xavier_initializer())
             b_z = tf.get_variable("b_z",(self.state_size))
             b_r = tf.get_variable("b_r",(self.state_size))
