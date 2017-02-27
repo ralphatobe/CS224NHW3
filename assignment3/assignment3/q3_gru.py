@@ -87,7 +87,8 @@ class SequencePredictor(Model):
 
         x = self.inputs_placeholder
         ### YOUR CODE HERE (~2-3 lines)
-        preds_unscaled = tf.nn.dynamic_rnn(cell, inputs = x)
+        h = tf.zeros(shape = [tf.shape(x)[0], cell.state_size] , dtype = tf.float32)
+        preds_unscaled = tf.nn.dynamic_rnn(cell, inputs = x, initial_state = h)
         preds = tf.sigmoid(preds_unscaled)
         ### END YOUR CODE
 
@@ -110,7 +111,7 @@ class SequencePredictor(Model):
         y = self.labels_placeholder
 
         ### YOUR CODE HERE (~1-2 lines)
-        loss = tf.reduce_mean(tf.l2_loss(pred))
+        loss = tf.reduce_mean(tf.l2_loss(y-pred))
         ### END YOUR CODE
 
         return loss
