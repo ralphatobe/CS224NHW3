@@ -65,20 +65,22 @@ class GRUCell(tf.nn.rnn_cell.RNNCell):
         # be defined elsewhere!
         with tf.variable_scope(scope):
             ### YOUR CODE HERE (~20-30 lines)
-            U_z = tf.get_variable("U_z",(self.input_size,self.state_size),
+	    W_r = tf.get_variable("W_r",(self.state_size,self.state_size),
                             initializer = tf.contrib.layers.xavier_initializer())
             U_r = tf.get_variable("U_r",(self.input_size,self.state_size),
                             initializer = tf.contrib.layers.xavier_initializer())
-            U_o = tf.get_variable("U_o",(self.input_size,self.state_size),
-                            initializer = tf.contrib.layers.xavier_initializer())
+            b_r = tf.get_variable("b_r",(self.state_size),initializer = tf.constant_initializer(0))
+
             W_z = tf.get_variable("W_z",(self.state_size,self.state_size),
                             initializer = tf.contrib.layers.xavier_initializer())
-            W_r = tf.get_variable("W_r",(self.state_size,self.state_size),
-                            initializer = tf.contrib.layers.xavier_initializer())
-            W_o = tf.get_variable("W_o",(self.state_size,self.state_size),
+            U_z = tf.get_variable("U_z",(self.input_size,self.state_size),
                             initializer = tf.contrib.layers.xavier_initializer())
             b_z = tf.get_variable("b_z",(self.state_size),initializer = tf.constant_initializer(0))
-            b_r = tf.get_variable("b_r",(self.state_size),initializer = tf.constant_initializer(0))
+
+            W_o = tf.get_variable("W_o",(self.state_size,self.state_size),
+                            initializer = tf.contrib.layers.xavier_initializer())
+            U_o = tf.get_variable("U_o",(self.input_size,self.state_size),
+                            initializer = tf.contrib.layers.xavier_initializer())
             b_o = tf.get_variable("b_o",(self.state_size),initializer = tf.constant_initializer(0))
 
             z_t = tf.sigmoid(tf.matmul(inputs,U_z)+ tf.matmul(state,W_z) + b_z)
