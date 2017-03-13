@@ -45,6 +45,11 @@ def read_conll(fstream):
         ret.append((current_toks, current_lbls))
     return ret
 
+def read_json(fstream): # fstream = .json filename 
+    # label = (start,end) -- This in # of character or # of words.
+    # ret = list((question,context,label))
+    return ret
+
 def test_read_conll():
     input_ = [
         "EU	ORG",
